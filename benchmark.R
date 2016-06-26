@@ -5,9 +5,9 @@ load_all("../mlr/")
 source("createFizzbuzzData.R")
 
 n = 10000
+data = createData(n)
 
-
-task = makeClassifTask(id = "fizzbuzz", data = createData(n), target = "y")
+task = makeClassifTask(id = "fizzbuzz", data = data, target = "y")
 
 
 lrns = list(
@@ -30,6 +30,8 @@ res = benchmark(lrns, task, cv10, measures = mmce)
 
 save(res, file = "result.RData")
 
-plotBMRBoxplots(res) + geom_hline(yintercept = 0.5)
+major_class = max(table(data$y))/sum(table(data$y))
+
+plotBMRBoxplots(res) + geom_hline(yintercept = major_class)
 ggsave("result.png")
 
