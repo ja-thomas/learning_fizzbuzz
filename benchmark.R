@@ -7,7 +7,7 @@ source("createFizzbuzzData.R")
 n = 10000
 
 
-task = makeClassifTask(data = createData(n), target = "y")
+task = makeClassifTask(id = "fizzbuzz", data = createData(n), target = "y")
 
 
 lrns = list(
@@ -24,8 +24,12 @@ lrns = list(
               train_samples_per_iteration = -1)
 )
 
-res = benchmark(lrns, task, cv10, measures = acc)
+rdesc = makeResampleDesc("CV", iters = 10, stratify = TRUE)
 
+res = benchmark(lrns, task, cv10, measures = mmce)
 
+save(res, file = "result.RData")
 
+plotBMRBoxplots(res) + geom_hline(yintercept = 0.5)
+ggsave("result.png")
 
